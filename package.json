@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "@tanstack/react-query": "^5.62.11",
+    "firebase": "^11.1.0",
+    "react-simple-captcha": "^9.3.1"
+  }
+}

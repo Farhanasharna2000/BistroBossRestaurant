@@ -1,0 +1,24 @@
+.custom-tablist {
+    display: flex;
+  }
+  
+  .custom-tab {
+    padding: 10px 15px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: black;
+    outline: none;
+    transition: all 0.3s ease;
+  }
+  
+  .custom-tab:hover {
+    color: #BB8506;
+  }
+  
+  .custom-tab.active {
+    border-bottom: 2px solid #BB8506;
+    color: #BB8506;
+  }
+  
