@@ -40,7 +40,7 @@ app.post('/jwt', async (req, res) => {
 //middlewares:
 //verifyToken
 const verifyToken = (req, res, next) => {
-  console.log('inside token',req.headers.authorization);
+  // console.log('inside token',req.headers.authorization);
 if(!req.headers.authorization){
   return res.status(401).send({message:'unauthorized access'})
 }
@@ -127,6 +127,36 @@ app.get('/menu',async(req,res)=>{
 const result = await menuCollection.find().toArray()
 res.send(result)
 })
+  //update menu data from db
+
+  app.get('/menu/:id', async (req, res) => {
+    const id = req.params.id;
+    
+    const query = { _id: new ObjectId(id) }
+    const result = await menuCollection.findOne(query);
+    
+    res.send(result);
+  })
+  app.patch('/menu/:id', async (req, res) => {
+    const item=req.body;
+    const id = req.params.id;
+    
+    const filter = { _id: new ObjectId(id) }
+    const updatedDoc={
+      $set:{
+        recipe:item.recipe,
+        price:item.price,
+        name:item.name,
+        category:item.category,
+        image:item.image,
+
+
+      }
+    }
+    const result = await menuCollection.updateOne(filter,updatedDoc);
+    
+    res.send(result);
+  })
   //post menu data in db
 
   app.post('/menu',verifyToken,verifyAdmin, async (req, res) => {
@@ -134,6 +164,18 @@ res.send(result)
     const result = await menuCollection.insertOne(item);
     res.send(result);
   });
+
+  //delete menu data from db
+
+app.delete('/menu/:id',verifyToken,verifyAdmin, async (req, res) => {
+  const id = req.params.id;
+  
+  const query = { _id: new ObjectId(id) }
+  const result = await menuCollection.deleteOne(query);
+  
+  res.send(result);
+})
+
 //get reviews data from db
 
 app.get('/reviews',async(req,res)=>{

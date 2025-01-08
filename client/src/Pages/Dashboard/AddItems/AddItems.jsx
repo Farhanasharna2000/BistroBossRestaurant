@@ -115,7 +115,6 @@ if(menuRes.data.insertedId){
                     <button className="btn btn-outline">
                         Add item <FaUtensils />
                     </button>
-                    {/* <input type="submit" /> */}
                 </form>
             </div>
         </div>
