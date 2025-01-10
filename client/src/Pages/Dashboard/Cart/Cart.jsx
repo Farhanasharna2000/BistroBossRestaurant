@@ -3,6 +3,7 @@ import SectionTitle from "../../../Components/SectionTitle/SectionTitle";
 import UseCart from "../../../Hooks/UseCart";
 import Swal from "sweetalert2";
 import UseAxiosSecure from "../../../Hooks/UseAxiosSecure";
+import { Link } from "react-router-dom";
 
 const Cart = () => {
     const [cart,refetch]=UseCart();
@@ -45,7 +46,20 @@ const Cart = () => {
             <div className="flex justify-evenly items-center mb-8">
                 <h2 className="md:text-2xl font-semibold">Total orders: {cart.length}</h2>
                 <h2 className="md:text-2xl font-semibold">Total price: ${totalPrice}</h2>
-<button className="btn bg-[#D1A054] text-white">Pay</button>
+                {
+                  cart.length?
+                  <Link to={'/dashboard/payment'}>
+                
+                  <button
+            
+                  className="btn bg-[#D1A054] text-white">Pay</button>
+                                  </Link>
+                  :
+                  <button
+                  disabled
+                  className="btn bg-[#D1A054] text-white">Pay</button>
+                }
+               
             </div>
             <div className="overflow-x-auto">
   <table className="table table-xs table-pin-rows table-pin-cols w-full">
@@ -84,9 +98,11 @@ const Cart = () => {
             </td>
             <td>${item.price}</td>
             <th>
-              <button 
+         
+         <button 
               onClick={()=>handleDelete(item._id)}
               className="btn btn-ghost btn-lg text-[#B91C1C]"><RiDeleteBinLine /></button>
+        
             </th>
           </tr>)
     }
