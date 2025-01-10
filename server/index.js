@@ -1,15 +1,16 @@
 const express = require('express');
-const cors = require('cors');
-const jwt = require('jsonwebtoken')
-
 const app = express();
-require('dotenv').config()
+const cors = require('cors');
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+
 const port = process.env.PORT || 4000;
 
 // middleware
 
-app.use(express.json())
 app.use(cors())
+app.use(express.json())
 
 
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
@@ -30,6 +31,8 @@ const userCollection=client.db('bistroDB').collection('users')
 const menuCollection=client.db('bistroDB').collection('menu')
 const reviewCollection=client.db('bistroDB').collection('reviews')
 const cartCollection=client.db('bistroDB').collection('carts')
+const paymentCollection=client.db('bistroDB').collection('payments')
+
 
 //jwt related apis
 app.post('/jwt', async (req, res) => {
@@ -208,6 +211,46 @@ app.get('/reviews',async(req,res)=>{
     const result = await cartCollection.deleteOne(query);
     res.send(result);
   })
+
+  //payment intent
+  app.post('/create-payment-intent',async(req,res)=>{
+    const {price}=req.body;
+    const amount=parseInt(price*100) //price poysay hisab hoy
+   console.log(amount,'inside intent');
+   
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: amount,
+      currency: 'usd',
+      "payment_method_types": [
+        "card"
+      ],
+    });
+    res.send({clientSecret: paymentIntent.client_secret});
+  })
+//get payments data from db
+
+app.get('/payments/:email',verifyToken,async(req,res)=>{
+  const query={email:req.params.email}
+  if (req.params.email !== req.decoded.email) {
+    return res.status(403).send({ message: 'forbidden access' });
+  }
+  const result = await paymentCollection.find(query).toArray()
+  res.send(result)
+  })
+  //payment related api
+  app.post('/payments', async (req, res) => {
+    const payment = req.body;
+    const paymentResult = await paymentCollection.insertOne(payment);
+     //  carefully delete each item from the cart
+     console.log('payment info', payment);
+     const query={_id:{
+      $in:payment.cartIds.map(id=>new ObjectId(id))
+      
+     }}
+    const deleteResult = await cartCollection.deleteMany(query);
+
+     res.send({paymentResult,deleteResult})
+  });
 
     // Connect the client to the server	(optional starting in v4.7)
     // await client.connect();

@@ -87,10 +87,10 @@ const Dashboard = () => {
                                     </NavLink>
                                 </li>
                                 <li>
-                                    <NavLink to={'/dashboard/booking'}>
+                                    <NavLink to={'/dashboard/paymentHistory'}>
                                         <PiCalendarCheckFill />
 
-                                        My booking
+                                        Payment History
                                     </NavLink>
                                 </li>
                             </>
