@@ -5,9 +5,11 @@ import { AuthContext } from "../../../Providers/AuthProvider";
 import { IoMdContact } from "react-icons/io";
 import { IoCartOutline } from "react-icons/io5";
 import UseCart from "../../../Hooks/UseCart";
+import UseAdmins from "../../../Hooks/UseAdmins";
 const Navbar = () => {
     const {user,logOut}=useContext(AuthContext)
     const [cart]=UseCart()
+    const [isAdmin]=UseAdmins()
     const handleLogOut=()=>{
         logOut()
         .then(()=>{
@@ -74,7 +76,31 @@ const Navbar = () => {
                     Order Food
                 </NavLink>
             </li>
-          
+            {
+            // user ? 'true': 'false'
+            // user ? condition ? 'double true' : 'one true' : 'false' 
+        }
+        {
+            user && isAdmin && 
+            <li>
+                <NavLink className={({ isActive }) =>
+                `font-extrabold  ${isActive ?
+                    " text-yellow-500 " :        
+                    " text-white"}`
+            } to="/dashboard/adminHome" >Dashboard</NavLink>
+            </li>
+        }
+        {
+            user && !isAdmin && 
+            <li>
+                <NavLink className={({ isActive }) =>
+                `font-extrabold  ${isActive ?
+                    " text-yellow-500 " :
+                    
+                    " text-white"}`
+            } to="/dashboard/userHome">Dashboard</NavLink>
+            </li>
+        }
             <li>
                 <NavLink
                    
